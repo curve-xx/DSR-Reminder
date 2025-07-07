@@ -3,6 +3,7 @@ using System;
 using EAS.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EAS.API.Data.Migrations
 {
     [DbContext(typeof(DSRReminderContext))]
-    partial class DSRReminderContextModelSnapshot : ModelSnapshot
+    [Migration("20250707125701_AddedIsPresent")]
+    partial class AddedIsPresent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");

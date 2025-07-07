@@ -9,6 +9,7 @@ public class Attendance
     public required string Name { get; set; }
     public required string EmailId { get; set; }
     public required string MobileNumber { get; set; }
+    public bool IsPresent { get; set; } = true;
 
     public bool IsDeleted { get; set; }
     public required string CreatedBy { get; set; }
