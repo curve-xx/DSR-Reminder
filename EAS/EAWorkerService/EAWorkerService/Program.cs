@@ -2,15 +2,17 @@ using EAWorkerService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = Host.CreateApplicationBuilder(args);
+var host = Host.CreateDefaultBuilder(args)
+    .UseWindowsService()
+    .ConfigureServices((context, services) =>
+    {
+        var easAPIUrl = context.Configuration["EASApiUrl"] ?? throw new Exception("EAS API URL is missing.");
 
-// Manually add WindowsServiceLifetime
-builder.Services.AddWindowsService();
+        services.AddHttpClient<EmployeeAttendanceClient>(client =>
+            client.BaseAddress = new Uri(easAPIUrl));
 
-// Register your background worker service
-builder.Services.AddHostedService<Worker>();
+        services.AddHostedService<Worker>();
+    })
+    .Build();
 
-var host = builder.Build();
-
-// Run the application
 host.Run();

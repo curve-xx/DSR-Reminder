@@ -1,14 +1,23 @@
 namespace EAWorkerService;
 
-public class Worker(ILogger<Worker> logger) : BackgroundService
+public class Worker : BackgroundService
 {
+    private readonly ILogger<Worker> _logger;
+    private readonly EmployeeAttendanceClient _client;
+
+    public Worker(ILogger<Worker> logger, EmployeeAttendanceClient client)
+    {
+        _logger = logger;
+        _client = client;
+    }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var now = DateTime.Now;
-        var nextMidnight = now.AddMinutes(30);
+        var nextMidnight = now.AddMinutes(60);
         var delay = nextMidnight - now;
 
-        logger.LogInformation("Service started. Waiting until ({targetTime}) to execute task.",
+        _logger.LogInformation("Service started. Waiting until ({targetTime}) to execute task.",
             nextMidnight);
 
         try
@@ -17,15 +26,15 @@ public class Worker(ILogger<Worker> logger) : BackgroundService
 
             if (!stoppingToken.IsCancellationRequested)
             {
-                logger.LogInformation("Executing task at {time}", DateTime.Now);
-                EmployeeAttendance.RunAttendanceJob();
+                _logger.LogInformation("Executing task at {time}", DateTime.Now);
+                await _client.RunAttendanceJobAsync();
             }
         }
         catch (TaskCanceledException)
         {
-            logger.LogInformation("Execution cancelled before midnight.");
+            _logger.LogInformation("Execution cancelled before midnight.");
         }
 
-        logger.LogInformation("Task completed. Exiting service.");
-    }    
+        _logger.LogInformation("Task completed. Exiting service.");
+    }
 }
