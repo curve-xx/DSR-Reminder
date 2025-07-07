@@ -1,0 +1,22 @@
+@MyWebAPI_HostAddress = http://localhost:5032
+
+### Get All Attendance
+GET {{MyWebAPI_HostAddress}}/api/attendance
+Accept: application/json
+
+### Get Attendance by ID
+GET {{MyWebAPI_HostAddress}}/api/attendance/1
+Accept: application/json
+
+### Create Attendance
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Moiz Ahmed",
+  "emailId": "moiz.ahmed@example.com",
+  "mobileNumber": "1234567890",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-07T14:14:00.370Z"
+}
