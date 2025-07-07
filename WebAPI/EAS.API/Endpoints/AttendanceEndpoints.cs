@@ -54,6 +54,19 @@ public static class AttendanceEndpoints
             return Results.Ok(results);
         });
 
+        group.MapPut("/{id:int}", async (DSRReminderContext context, int id, UpdateAttendanceDto dto) =>
+        {
+            var attendance = await context.Attendances.FindAsync(id);
+            if (attendance is null) return Results.NotFound();
+
+            attendance.IsPresent = attendance.IsPresent ? false : true; // Toggle IsPresent
+            attendance.UpdatedBy = "Administrator";
+            attendance.UpdatedOn = DateTime.Now;
+
+            await context.SaveChangesAsync();
+            return Results.Ok(attendance);
+        });
+
         return group;
     }
 }
