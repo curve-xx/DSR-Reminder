@@ -1,0 +1,50 @@
+﻿@inject AttendanceClient AttendanceClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<!-- Modal -->
+<div class="modal fade" id="@GetModalId(Attendance)" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">@title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="ConfirmAsync">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public AttendanceSummary? Attendance { get; set; }
+
+    private string title = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Attendance?.IsPresent == true)
+        {
+            title = $"Mark {Attendance?.Name} as absent?";
+        }
+        else
+        {
+            title = $"Mark {Attendance?.Name} as present?";
+        }
+    }
+
+    public static string GetModalId(AttendanceSummary? attendance)
+    {
+        return $"update-attendance-{attendance?.Id}";
+    }
+
+    private async Task ConfirmAsync()
+    {
+        await AttendanceClient.UpdateAttendanceAsync(Attendance!);
+        NavigationManager.Refresh();
+    }
+}
