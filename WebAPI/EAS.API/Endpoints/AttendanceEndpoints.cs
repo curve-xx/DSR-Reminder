@@ -1,6 +1,5 @@
 using EAS.API.Data;
 using EAS.API.Dtos;
-using EAS.API.Entities;
 using EAS.API.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,13 +12,13 @@ public static class AttendanceEndpoints
         var group = app.MapGroup("/api/attendance").WithParameterValidation();
 
         // Get all attendance records
-        group.MapGet("/", async (Data.DSRReminderContext context) =>
+        group.MapGet("/", async (DSRReminderContext context) =>
         {
             return await context.Attendances.ToListAsync();
         });
 
         // Get attendance by ID
-        group.MapGet("/{id:int}", async (Data.DSRReminderContext context, int id) =>
+        group.MapGet("/{id:int}", async (DSRReminderContext context, int id) =>
         {
             var attendance = await context.Attendances.FindAsync(id);
             return attendance is not null ? Results.Ok(attendance) : Results.NotFound();
@@ -29,11 +28,30 @@ public static class AttendanceEndpoints
         group.MapPost("/", async (DSRReminderContext context, CreateAttendanceDto dto) =>
         {
             var attendance = dto.ToEntity();
-            
+
             context.Attendances.Add(attendance);
             await context.SaveChangesAsync();
 
             return Results.Created($"/api/attendance/{attendance.Id}", attendance);
+        });
+
+        // Get attendance records by filters
+        group.MapGet("/filters", async (DSRReminderContext context, [AsParameters] AttendanceFiltersDto dto) =>
+        {
+            var query = context.Attendances.AsQueryable();
+
+            if (dto.FromDate.HasValue && dto.ToDate.HasValue && dto.FromDate <= dto.ToDate)
+            {
+                query = query.Where(a => a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date);
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.Name))
+            {
+                query = query.Where(a => a.Name.Contains(dto.Name));
+            }
+
+            var results = await query.ToListAsync();
+            return Results.Ok(results);
         });
 
         return group;
