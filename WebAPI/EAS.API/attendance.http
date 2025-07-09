@@ -36,10 +36,14 @@ Content-Type: application/json
 
 ### Get Attendance Records by Filters
 GET {{MyWebAPI_HostAddress}}/api/attendance/filters
-Content-Type: application/json
+Accept: application/json
 
 {
   "name": "Moiz Ahmed",
   "fromDate": "2025-07-09T12:41:00.000Z",
   "toDate": "2025-07-09T12:41:00.000Z"
 }
+
+### Search Attendance
+GET {{MyWebAPI_HostAddress}}/api/attendance/search?name=Moizfromdate=2025-07-09T12:41:00.000Z&todate=2025-07-09T12:41:00.000Z
+Accept: application/json
