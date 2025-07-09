@@ -9,5 +9,7 @@ public class AttendanceClient(HttpClient httpClient)
       => await httpClient.GetFromJsonAsync<AttendanceSummary[]>("attendance") ?? [];
 
    public async Task UpdateAttendanceAsync(AttendanceSummary updateAttendance)
-      => await httpClient.PutAsJsonAsync($"attendance/{updateAttendance.Id}", updateAttendance);
+   {
+      await httpClient.PutAsJsonAsync($"attendance/{updateAttendance.Id}", updateAttendance);
+   }
 }
