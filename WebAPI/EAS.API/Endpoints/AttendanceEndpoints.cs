@@ -38,17 +38,11 @@ public static class AttendanceEndpoints
         // Get attendance records by filters
         group.MapGet("/filters", async (DSRReminderContext context, [AsParameters] AttendanceFiltersDto dto) =>
         {
-            var query = context.Attendances.AsQueryable();
-
-            if (dto.FromDate.HasValue && dto.ToDate.HasValue && dto.FromDate <= dto.ToDate)
-            {
-                query = query.Where(a => a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date);
-            }
-
-            if (!string.IsNullOrWhiteSpace(dto.Name))
-            {
-                query = query.Where(a => a.Name.Contains(dto.Name));
-            }
+            var query = context.Attendances
+                        .Where(a =>
+                            (!dto.FromDate.HasValue || !dto.ToDate.HasValue || a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date) &&
+                            (string.IsNullOrWhiteSpace(dto.Name) || a.Name.Contains(dto.Name))
+                        );
 
             var results = await query.ToListAsync();
             return Results.Ok(results);
