@@ -35,19 +35,6 @@ public static class AttendanceEndpoints
             return Results.Created($"/api/attendance/{attendance.Id}", attendance);
         });
 
-        // Get attendance records by filters
-        group.MapGet("/filters", async (DSRReminderContext context, [AsParameters] AttendanceFiltersDto dto) =>
-        {
-            var query = context.Attendances
-                        .Where(a =>
-                            (!dto.FromDate.HasValue || !dto.ToDate.HasValue || a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date) &&
-                            (string.IsNullOrWhiteSpace(dto.Name) || a.Name.Contains(dto.Name))
-                        );
-
-            var results = await query.ToListAsync();
-            return Results.Ok(results);
-        });
-
         // Update attendance by ID
         group.MapPut("/{id:int}", async (DSRReminderContext context, int id, UpdateAttendanceDto dto) =>
         {
@@ -60,6 +47,19 @@ public static class AttendanceEndpoints
 
             await context.SaveChangesAsync();
             return Results.Ok(attendance);
+        });
+
+        // Get attendance records by filters
+        group.MapGet("/filters", async (DSRReminderContext context, [AsParameters] AttendanceFiltersDto dto) =>
+        {
+            var query = context.Attendances
+                        .Where(a =>
+                            (!dto.FromDate.HasValue || !dto.ToDate.HasValue || a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date) &&
+                            (string.IsNullOrWhiteSpace(dto.Name) || a.Name.Contains(dto.Name))
+                        );
+
+            var results = await query.ToListAsync();
+            return Results.Ok(results);
         });
 
         return group;

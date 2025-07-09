@@ -21,7 +21,7 @@ Content-Type: application/json
   "createdOn": "2025-07-09T12:41:00.000Z"
 }
 
-###
+### Update Attendance
 PUT {{MyWebAPI_HostAddress}}/api/attendance/1
 Content-Type: application/json
 
@@ -32,4 +32,14 @@ Content-Type: application/json
   "mobileNumber": "9172499704",
   "isPresent": true,
   "createdOn": "2025-07-09T12:41:00.000Z"
+}
+
+### Get Attendance Records by Filters
+GET {{MyWebAPI_HostAddress}}/api/attendance/filters
+Content-Type: application/json
+
+{
+  "name": "Moiz Ahmed",
+  "fromDate": "2025-07-09T12:41:00.000Z",
+  "toDate": "2025-07-09T12:41:00.000Z"
 }
