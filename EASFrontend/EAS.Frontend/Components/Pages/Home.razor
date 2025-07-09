@@ -1,7 +1,6 @@
 ﻿@page "/"
 
 @inject AttendanceClient attendanceClient
-@inject IJSRuntime JSRuntime
 @attribute [StreamRendering]
 
 <PageTitle>Attendance</PageTitle>
@@ -66,12 +65,7 @@ else
     {
         attendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JSRuntime.InvokeVoidAsync("refresh", "initializeDataTable");
-    }
-
+    
     private string GetUpdateModalId(AttendanceSummary attendance)
     {
         return $"#{UpdateAttendance.GetModalId(attendance)}";

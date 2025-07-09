@@ -1,6 +1,5 @@
 ﻿@inject AttendanceClient AttendanceClient
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
 
 <!-- Modal -->
@@ -47,7 +46,6 @@
     private async Task ConfirmAsync()
     {
         await AttendanceClient.UpdateAttendanceAsync(Attendance!);
-        await JSRuntime.InvokeVoidAsync("refresh", "initializeDataTable");
         NavigationManager.Refresh();
     }
 }
