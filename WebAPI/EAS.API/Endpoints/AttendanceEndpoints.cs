@@ -54,7 +54,8 @@ public static class AttendanceEndpoints
             return Results.Ok(results);
         });
 
-        group.MapPut("/{id:int}", async (DSRReminderContext context, int id) =>
+        // Update attendance by ID
+        group.MapPut("/{id:int}", async (DSRReminderContext context, int id, UpdateAttendanceDto dto) =>
         {
             var attendance = await context.Attendances.FindAsync(id);
             if (attendance is null) return Results.NotFound();
