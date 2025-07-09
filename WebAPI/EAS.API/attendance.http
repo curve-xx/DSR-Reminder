@@ -20,3 +20,7 @@ Content-Type: application/json
   "createdBy": "System",
   "createdOn": "2025-07-07T14:14:00.370Z"
 }
+
+###
+PUT {{MyWebAPI_HostAddress}}/api/attendance/1
+Content-Type: application/json
