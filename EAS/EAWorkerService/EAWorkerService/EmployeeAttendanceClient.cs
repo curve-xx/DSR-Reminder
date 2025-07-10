@@ -6,10 +6,12 @@ namespace EAWorkerService;
 public class EmployeeAttendanceClient
 {
     private readonly HttpClient _httpClient;
+    private readonly MySettings _settings;
 
-    public EmployeeAttendanceClient(HttpClient httpClient)
+    public EmployeeAttendanceClient(HttpClient httpClient, MySettings settings)
     {
         _httpClient = httpClient;
+        _settings = settings;
     }
 
     // Your attendance job logic here
@@ -18,9 +20,9 @@ public class EmployeeAttendanceClient
         // Initialize the AttendanceDetails object with data
         var attendanceDetails = new AttendanceDetails
         {
-            Name = "Moiz Ahmed",
-            EmailId = "moeezinbox@gmail.com",
-            MobileNumber = "9172499704",
+            Name = _settings.Name,
+            EmailId = _settings.EmailId,
+            MobileNumber = _settings.MobileNumber,
             IsDeleted = false,
             CreatedBy = "System",
             CreatedOn = DateTime.Now

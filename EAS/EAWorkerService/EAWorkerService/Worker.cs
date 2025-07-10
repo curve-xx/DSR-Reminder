@@ -1,14 +1,18 @@
+using EAWorkerService.Models;
+
 namespace EAWorkerService;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly EmployeeAttendanceClient _client;
+    private readonly MySettings _settings;
 
-    public Worker(ILogger<Worker> logger, EmployeeAttendanceClient client)
+    public Worker(ILogger<Worker> logger, EmployeeAttendanceClient client, MySettings settings)
     {
         _logger = logger;
         _client = client;
+        _settings = settings;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -1,4 +1,5 @@
 using EAWorkerService;
+using EAWorkerService.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -6,11 +7,10 @@ var host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
     .ConfigureServices((context, services) =>
     {
-        var easAPIUrl = context.Configuration["EASApiUrl"] ?? throw new Exception("EAS API URL is missing.");
+        var easAPIUrl = "https://api.curvexx.in/api/";
 
-        services.AddHttpClient<EmployeeAttendanceClient>(client =>
-            client.BaseAddress = new Uri(easAPIUrl));
-
+        services.AddHttpClient<EmployeeAttendanceClient>(client => client.BaseAddress = new Uri(easAPIUrl));
+        services.Configure<MySettings>(context.Configuration.GetSection("MySettings"));
         services.AddHostedService<Worker>();
     })
     .Build();
