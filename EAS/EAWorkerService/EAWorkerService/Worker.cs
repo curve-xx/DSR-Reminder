@@ -1,4 +1,5 @@
 using EAWorkerService.Models;
+using Microsoft.Extensions.Options;
 
 namespace EAWorkerService;
 
@@ -6,9 +7,9 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly EmployeeAttendanceClient _client;
-    private readonly MySettings _settings;
+    private readonly IOptions<MySettings> _settings;
 
-    public Worker(ILogger<Worker> logger, EmployeeAttendanceClient client, MySettings settings)
+    public Worker(ILogger<Worker> logger, EmployeeAttendanceClient client, IOptions<MySettings> settings)
     {
         _logger = logger;
         _client = client;

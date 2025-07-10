@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using EAWorkerService.Models;
+using Microsoft.Extensions.Options;
 
 namespace EAWorkerService;
 
@@ -8,10 +9,10 @@ public class EmployeeAttendanceClient
     private readonly HttpClient _httpClient;
     private readonly MySettings _settings;
 
-    public EmployeeAttendanceClient(HttpClient httpClient, MySettings settings)
+    public EmployeeAttendanceClient(HttpClient httpClient, IOptions<MySettings> settings)
     {
         _httpClient = httpClient;
-        _settings = settings;
+        _settings = settings.Value;
     }
 
     // Your attendance job logic here
