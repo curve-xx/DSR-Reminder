@@ -65,14 +65,28 @@ public static class AttendanceEndpoints
         // Search attendance by name or date
         group.MapGet("/search", async (DSRReminderContext context, string? name = null, DateTime? fromdate = null, DateTime? todate = null) =>
         {
-             var query = context.Attendances
-                        .Where(a =>
-                            (!fromdate.HasValue || !todate.HasValue || a.CreatedOn.Date >= fromdate.Value.Date && a.CreatedOn.Date <= todate.Value.Date) &&
-                            (string.IsNullOrWhiteSpace(name) || a.Name.Contains(name))
-                        );
+            var query = context.Attendances
+                       .Where(a =>
+                           (!fromdate.HasValue || !todate.HasValue || a.CreatedOn.Date >= fromdate.Value.Date && a.CreatedOn.Date <= todate.Value.Date) &&
+                           (string.IsNullOrWhiteSpace(name) || a.Name.Contains(name))
+                       );
 
             var results = await query.ToListAsync();
             return Results.Ok(results);
+        });
+
+        // Edit attendance by ID
+        group.MapPost("/edit", async (DSRReminderContext context, UpdateAttendanceDto dto) =>
+        {
+            var attendance = await context.Attendances.FindAsync(dto.Id);
+            if (attendance is null) return Results.NotFound();
+
+            attendance.IsPresent = attendance.IsPresent ? false : true; // Toggle IsPresent
+            attendance.UpdatedBy = "Administrator";
+            attendance.UpdatedOn = DateTime.Now;
+
+            await context.SaveChangesAsync();
+            return Results.Ok(attendance);
         });
 
         return group;
