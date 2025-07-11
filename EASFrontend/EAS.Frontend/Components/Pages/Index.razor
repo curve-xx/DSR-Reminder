@@ -1,4 +1,4 @@
-﻿@page "/search"
+﻿@page "/"
 
 @inject AttendanceClient attendanceClient
 @attribute [StreamRendering]
@@ -22,7 +22,6 @@ else
                     <th>Mobile</th>
                     <th>Present</th>
                     <th>Created On</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -44,15 +43,6 @@ else
                             }
                         </td>
                         <td>@attendance.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                        <td>
-                            <div class="d-flex">
-                                <button class="btn btn-secondary" data-bs-toggle="modal"
-                                    data-bs-target="@GetUpdateModalId(attendance)">
-                                    @(attendance.IsPresent ? "Mark Absent" : "Mark Present")
-                                </button>
-                                <UpdateAttendance Attendance="@attendance" />
-                            </div>
-                        </td>
                     </tr>
                 }
             </tbody>
@@ -67,10 +57,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         attendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
-    }
-
-    private string GetUpdateModalId(AttendanceSummary attendance)
-    {
-        return $"#{UpdateAttendance.GetModalId(attendance)}";
     }
 }
