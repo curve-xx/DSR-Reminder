@@ -1,0 +1,27 @@
+﻿@inject AttendanceClient AttendanceClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<!-- SearchFilters.razor -->
+<div class="row mb-3">
+    <div class="col">
+        <input type="text" @bind="SearchName" placeholder="Search by name" class="form-control" />
+    </div>
+    <div class="col">
+        <button type="button" class="btn btn-primary" @onclick="OnSearchClicked">Search</button>
+    </div>
+</div>
+
+@code {
+    private string SearchName = "Shoeb";
+
+    [Parameter]
+    public AttendanceSummary[]? Attendances { get; set; }
+
+    [Parameter]
+    public EventCallback OnSearch { get; set; }
+
+    private async Task OnSearchClicked()
+    {
+        await OnSearch.InvokeAsync();
+    }
+}

@@ -1,12 +1,23 @@
 ﻿@page "/search"
 
 @inject AttendanceClient attendanceClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 @attribute [StreamRendering]
 
 <PageTitle>Attendance</PageTitle>
 
+<!-- SearchFilters.razor -->
+<div class="row mb-3">
+    <div class="col">
+        <input type="text" @bind="SearchName" placeholder="Search by name" class="form-control" />
+    </div>
+    <div class="col">
+        <button type="button" class="btn btn-primary" @onclick="HandleSearchAsync">Search</button>
+    </div>
+</div>
 
-@if (attendanceSummaries is null)
+@if (filteredAttendanceSummaries is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -26,7 +37,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var attendance in attendanceSummaries)
+                @foreach (var attendance in filteredAttendanceSummaries)
                 {
                     <tr>
                         <td>@(++index)</td>
@@ -62,15 +73,37 @@ else
 
 @code {
     private int index = 0;
+    private string SearchName = "Shoeb";
+
     private AttendanceSummary[]? attendanceSummaries;
+    private AttendanceSummary[]? filteredAttendanceSummaries;
 
     protected override async Task OnInitializedAsync()
     {
+        index = 0;
         attendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
+        filteredAttendanceSummaries = attendanceSummaries;
     }
 
     private string GetUpdateModalId(AttendanceSummary attendance)
     {
         return $"#{UpdateAttendance.GetModalId(attendance)}";
+    }
+
+    private async Task HandleSearchAsync()
+    {
+        index = 0;
+
+        if (string.IsNullOrWhiteSpace(SearchName))
+        {
+            filteredAttendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
+        }
+        else
+        {
+            filteredAttendanceSummaries = await attendanceClient.GetAttendanceSearchAsync(new AttendanceFilters
+            {
+                Name = SearchName
+            });
+        }
     }
 }
