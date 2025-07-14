@@ -2,18 +2,18 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <!-- SearchFilters.razor -->
-<div class="row mb-3 mt-3">
-    <div class="col">
+<div class="row mt-3">
+    <div class="col-md-3 mb-3">
         <input type="text" class="form-control" placeholder="Search by name" value="@SearchName"
             @oninput="e => SearchNameChanged.InvokeAsync(e.Value?.ToString())" />
     </div>
-    <div class="col">
+    <div class="col-md-3 mb-3">
         <input type="date" class="form-control" value="@FromDateString" @oninput="OnFromDateChanged" />
     </div>
-    <div class="col">
+    <div class="col-md-3 mb-3">
         <input type="date" class="form-control" value="@ToDateString" @oninput="OnToDateChanged" />
     </div>
-    <div class="col">
+    <div class="col-md-3 mb-3">
         <button class="btn btn-primary" @onclick="OnSearchClicked">Search</button>
     </div>
 </div>
