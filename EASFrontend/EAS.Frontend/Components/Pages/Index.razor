@@ -25,6 +25,9 @@ else
                 </tr>
             </thead>
             <tbody>
+                @{
+                    var index = 0;
+                }
                 @foreach (var attendance in attendanceSummaries)
                 {
                     <tr>
@@ -51,7 +54,6 @@ else
 }
 
 @code {
-    private int index = 0;
     private AttendanceSummary[]? attendanceSummaries;
 
     protected override async Task OnInitializedAsync()

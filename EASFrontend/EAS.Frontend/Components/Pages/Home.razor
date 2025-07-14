@@ -31,6 +31,9 @@ else
                 </tr>
             </thead>
             <tbody>
+                @{
+                    var index = 0;
+                }
                 @foreach (var attendance in filteredAttendanceSummaries)
                 {
                     <tr>
@@ -66,8 +69,6 @@ else
 }
 
 @code {
-    private int index = 0;
-
     private AttendanceSummary[]? attendanceSummaries;
     private AttendanceSummary[]? filteredAttendanceSummaries;
 
@@ -76,7 +77,6 @@ else
     private DateTime? ToDate { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        index = 0;
         attendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
         filteredAttendanceSummaries = attendanceSummaries;
     }
@@ -88,7 +88,6 @@ else
 
     private async Task HandleSearchAsync()
     {
-        index = 0;
         if (string.IsNullOrWhiteSpace(SearchName) && FromDate is null && ToDate is null)
         {
             filteredAttendanceSummaries = attendanceSummaries;
