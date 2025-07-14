@@ -7,15 +7,9 @@
 
 <PageTitle>Attendance</PageTitle>
 
-<!-- SearchFilters.razor -->
-<div class="row mb-3">
-    <div class="col">
-        <input type="text" @bind="SearchName" placeholder="Search by name" class="form-control" />
-    </div>
-    <div class="col">
-        <button type="button" class="btn btn-primary" @onclick="HandleSearchAsync">Search</button>
-    </div>
-</div>
+<SearchFilters Attendances="@attendanceSummaries" @bind-SearchName="@SearchName" @bind-FromDate="FromDate"
+    @bind-ToDate="ToDate" OnSearch="HandleSearchAsync">
+</SearchFilters>
 
 @if (filteredAttendanceSummaries is null)
 {
@@ -73,11 +67,13 @@ else
 
 @code {
     private int index = 0;
-    private string SearchName = "Shoeb";
 
     private AttendanceSummary[]? attendanceSummaries;
     private AttendanceSummary[]? filteredAttendanceSummaries;
 
+    private string SearchName { get; set; } = string.Empty;
+    private DateTime? FromDate { get; set; }
+    private DateTime? ToDate { get; set; }
     protected override async Task OnInitializedAsync()
     {
         index = 0;
@@ -93,16 +89,17 @@ else
     private async Task HandleSearchAsync()
     {
         index = 0;
-
-        if (string.IsNullOrWhiteSpace(SearchName))
+        if (string.IsNullOrWhiteSpace(SearchName) && FromDate is null && ToDate is null)
         {
-            filteredAttendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
+            filteredAttendanceSummaries = attendanceSummaries;
         }
         else
         {
             filteredAttendanceSummaries = await attendanceClient.GetAttendanceSearchAsync(new AttendanceFilters
             {
-                Name = SearchName
+                SearchName = SearchName,
+                FromDate = FromDate,
+                ToDate = ToDate
             });
         }
     }

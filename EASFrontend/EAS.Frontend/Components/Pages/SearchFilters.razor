@@ -2,26 +2,55 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <!-- SearchFilters.razor -->
-<div class="row mb-3">
+<div class="row mb-3 mt-3">
     <div class="col">
-        <input type="text" @bind="SearchName" placeholder="Search by name" class="form-control" />
+        <input type="text" class="form-control" placeholder="Search by name" value="@SearchName"
+            @oninput="e => SearchNameChanged.InvokeAsync(e.Value?.ToString())" />
     </div>
     <div class="col">
-        <button type="button" class="btn btn-primary" @onclick="OnSearchClicked">Search</button>
+        <input type="date" class="form-control" value="@FromDateString" @oninput="OnFromDateChanged" />
+    </div>
+    <div class="col">
+        <input type="date" class="form-control" value="@ToDateString" @oninput="OnToDateChanged" />
+    </div>
+    <div class="col">
+        <button class="btn btn-primary" @onclick="OnSearchClicked">Search</button>
     </div>
 </div>
 
 @code {
-    private string SearchName = "Shoeb";
+    [Parameter] public string SearchName { get; set; } = string.Empty;
+    [Parameter] public DateTime? FromDate { get; set; }
+    [Parameter] public DateTime? ToDate { get; set; }
 
     [Parameter]
     public AttendanceSummary[]? Attendances { get; set; }
 
+    [Parameter] public EventCallback<string> SearchNameChanged { get; set; }
+    [Parameter] public EventCallback<DateTime?> FromDateChanged { get; set; }
+    [Parameter] public EventCallback<DateTime?> ToDateChanged { get; set; }
+
     [Parameter]
     public EventCallback OnSearch { get; set; }
 
-    private async Task OnSearchClicked()
+    private string? FromDateString => FromDate?.ToString("yyyy-MM-dd");
+    private string? ToDateString => ToDate?.ToString("yyyy-MM-dd");
+
+    private async Task OnFromDateChanged(ChangeEventArgs e)
     {
-        await OnSearch.InvokeAsync();
+        if (DateTime.TryParse(e?.Value?.ToString(), out var parsed))
+            await FromDateChanged.InvokeAsync(parsed);
+        else
+            await FromDateChanged.InvokeAsync(null);
     }
+
+    private async Task OnToDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e?.Value?.ToString(), out var parsed))
+            await ToDateChanged.InvokeAsync(parsed);
+        else
+            await ToDateChanged.InvokeAsync(null);
+    }
+
+    private async Task OnSearchClicked() => await OnSearch.InvokeAsync();
 }

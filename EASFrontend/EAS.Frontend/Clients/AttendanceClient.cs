@@ -16,9 +16,9 @@ public class AttendanceClient(HttpClient httpClient)
       string parameters = string.Empty;
       if (attendanceFilters.FromDate is null || attendanceFilters.ToDate is null)
       {
-         if (!string.IsNullOrWhiteSpace(attendanceFilters.Name))
+         if (!string.IsNullOrWhiteSpace(attendanceFilters.SearchName))
          {
-            parameters = $"name={attendanceFilters.Name}";
+            parameters = $"name={attendanceFilters.SearchName}";
          }
          else
          {
@@ -27,9 +27,9 @@ public class AttendanceClient(HttpClient httpClient)
       }
       else
       {
-         if (!string.IsNullOrWhiteSpace(attendanceFilters.Name))
+         if (!string.IsNullOrWhiteSpace(attendanceFilters.SearchName))
          {
-            parameters = $"name={attendanceFilters.Name}&fromdate={attendanceFilters.FromDate?.ToString("yyyy-MM-dd")}&todate={attendanceFilters.ToDate?.ToString("yyyy-MM-dd")}";
+            parameters = $"name={attendanceFilters.SearchName}&fromdate={attendanceFilters.FromDate?.ToString("yyyy-MM-dd")}&todate={attendanceFilters.ToDate?.ToString("yyyy-MM-dd")}";
          }
          else
          {
