@@ -8,6 +8,7 @@ public class AttendanceSummary
     public required string Name { get; set; }
     public required string EmailId { get; set; }
     public required string MobileNumber { get; set; }
+    public required string IPAddress { get; set; }
     public bool IsPresent { get; set; }
     public DateTime CreatedOn { get; set; }
 }
