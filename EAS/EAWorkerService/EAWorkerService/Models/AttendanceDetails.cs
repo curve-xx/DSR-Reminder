@@ -18,6 +18,8 @@ public class AttendanceDetails
     [Required(ErrorMessage = "Mobile Number is required.")]
     [StringLength(10, ErrorMessage = "Mobile Number cannot be longer than 10 characters.")]
     public required string MobileNumber { get; set; }
+    
+    public required string IPAddress { get; set; }
 
     public bool IsDeleted { get; set; }
 

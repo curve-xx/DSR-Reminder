@@ -24,6 +24,7 @@ public class EmployeeAttendanceClient
             Name = _settings.Name,
             EmailId = _settings.EmailId,
             MobileNumber = _settings.MobileNumber,
+            IPAddress = IPAddressClient.GetPublicIPAsync().Result,
             IsDeleted = false,
             CreatedBy = "System",
             CreatedOn = DateTime.Now
