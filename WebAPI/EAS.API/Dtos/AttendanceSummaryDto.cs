@@ -5,5 +5,6 @@ public record class AttendanceSummaryDto(
     string Name,
     string EmailId,
     string MobileNumber,
+    string IPAddress,
     DateTime CreatedOn
 );

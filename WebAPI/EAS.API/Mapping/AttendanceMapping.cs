@@ -13,6 +13,7 @@ public static class AttendanceMapping
             attendance.Name,
             attendance.EmailId,
             attendance.MobileNumber,
+            attendance.IPAddress,
             attendance.CreatedOn
         );
     }
@@ -24,6 +25,7 @@ public static class AttendanceMapping
             Name = dto.Name,
             EmailId = dto.EmailId,
             MobileNumber = dto.MobileNumber,
+            IPAddress = dto.IPAddress,
             IsDeleted = dto.IsDeleted,
             CreatedBy = dto.CreatedBy,
             CreatedOn = dto.CreatedOn
