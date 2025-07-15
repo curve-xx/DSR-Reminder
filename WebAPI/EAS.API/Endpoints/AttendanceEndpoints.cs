@@ -25,9 +25,13 @@ public static class AttendanceEndpoints
         });
 
         // Post a new attendance record
-        group.MapPost("/", async (DSRReminderContext context, CreateAttendanceDto dto) =>
+        group.MapPost("/", async (DSRReminderContext context, IConfiguration config, CreateAttendanceDto dto) =>
         {
+            string publicIP = config["PublicIP"]?.ToString() ?? string.Empty;
+
             var attendance = dto.ToEntity();
+
+            attendance.IsPresent = (attendance.IPAddress == publicIP);
 
             context.Attendances.Add(attendance);
             await context.SaveChangesAsync();
