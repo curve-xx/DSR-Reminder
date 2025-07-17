@@ -4,14 +4,14 @@ using Microsoft.Extensions.Options;
 
 namespace EAS.API.Endpoints;
 
-public static class ServiceEndpoints
+public static class SlackEndpoints
 {
     public static RouteGroupBuilder MapServiceEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/service").WithParameterValidation();
+        var group = app.MapGroup("/api/slack").WithParameterValidation();
 
         // Add more service endpoints here as needed
-        group.MapPost("/slack", async (IOptions<SlackBotSettings> options) =>
+        group.MapPost("/task-update", async (IOptions<SlackBotSettings> options) =>
         {
             var service = new SlackService(options);
             await service.SendMessageToChannelAsync("*As-salamu alaykum,*\nHi, Good Morning!\nPlease update?");
