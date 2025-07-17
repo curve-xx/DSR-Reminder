@@ -1,0 +1,5 @@
+@MyWebAPI_HostAddress = http://localhost:5032
+
+###
+POST {{MyWebAPI_HostAddress}}/api/service/slack
+Content-Type: application/json
