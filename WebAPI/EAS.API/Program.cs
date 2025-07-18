@@ -2,6 +2,7 @@ using EAS.API;
 using EAS.API.Data;
 using EAS.API.Endpoints;
 using EAS.API.Entities;
+using EAS.API.TaskServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.AddSqlite<DSRReminderContext>(connectionString)
                 .AddProblemDetails()
                 .AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.Configure<SlackBotSettings>(builder.Configuration.GetSection("SlackBotSettings"));
+builder.Services.Configure<HolidayConfig>(builder.Configuration.GetSection("HolidayConfig"));
+
+// Register services
+builder.Services.AddHostedService<TaskUpdateTaskService>();
 
 // Swagger configuration: register services and middleware together for clarity
 builder.Services.AddEndpointsApiExplorer();
