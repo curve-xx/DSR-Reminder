@@ -47,9 +47,12 @@ public class TaskUpdateTaskService : BackgroundService
         try
         {
             var taskTime = DateTime.Now;
+            
+            var isSunday = new WeekendService().IsSunday(taskTime);
+            var isOddSaturday = new WeekendService().IsOddSaturday(taskTime);
             var isHoliday = new HolidayService(_holidayOptions).IsHoliday(taskTime);
             
-            if (!(IsSunday(taskTime) || IsOddSaturday(taskTime) || isHoliday))
+            if (!(isSunday || isOddSaturday || isHoliday))
             {
                 _logger.LogInformation("Running 9:30 AM task at: {Time}", taskTime);
 
@@ -65,19 +68,5 @@ public class TaskUpdateTaskService : BackgroundService
         {
             _logger.LogError(ex, "Error occurred during 9:30 AM task.");
         }
-    }
-
-    // Helper methods
-    bool IsSunday(DateTime date) => date.DayOfWeek == DayOfWeek.Sunday;
-
-    bool IsOddSaturday(DateTime date) =>
-        date.DayOfWeek == DayOfWeek.Saturday && (GetWeekOfMonth(date) % 2 == 1);
-
-    // Week of month logic
-    int GetWeekOfMonth(DateTime date)
-    {
-        var firstDay = new DateTime(date.Year, date.Month, 1);
-        int offset = (int)firstDay.DayOfWeek;
-        return ((date.Day + offset - 1) / 7) + 1;
-    }
+    }    
 }
