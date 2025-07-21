@@ -6,7 +6,7 @@ namespace EAS.API.Endpoints;
 
 public static class SlackEndpoints
 {
-    public static RouteGroupBuilder MapServiceEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapSlackServiceEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/slack").WithParameterValidation();
 
