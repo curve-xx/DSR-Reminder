@@ -49,8 +49,9 @@ public class GmailOAuthService
         return new UserCredential(flow, userId, token);
     }
 
-    public async Task<List<Google.Apis.Gmail.v1.Data.Message>> GetTodayEmailsFromAsync(UserCredential credential, string fromEmail)
+    public async Task<List<Message>> GetTodayEmailsFromAsync(UserCredential credential, string fromEmail)
     {
+        // Example: create Gmail service and get emails
         var gmailService = new GmailService(new BaseClientService.Initializer
         {
             HttpClientInitializer = credential,
@@ -58,14 +59,34 @@ public class GmailOAuthService
         });
 
         var today = DateTime.UtcNow.Date;
-        var tomorrow = today.AddDays(1);
+        var yesterday = today.AddDays(-1);
 
-        var query = $"after:{today:yyyy/MM/dd} before:{tomorrow:yyyy/MM/dd} from:{fromEmail}";
+        var query = $"after:{yesterday:yyyy/MM/dd} before:{today:yyyy/MM/dd} from:{fromEmail}";
 
         var request = gmailService.Users.Messages.List("me");
         request.Q = query;
 
         var response = await request.ExecuteAsync();
-        return response.Messages?.ToList() ?? new List<Google.Apis.Gmail.v1.Data.Message>();
+        var messages = new List<Message>();
+
+        if (response.Messages == null || !response.Messages.Any())
+            return messages;
+
+        foreach (var msg in response.Messages)
+        {
+            var emailInfo = await gmailService.Users.Messages.Get("me", msg.Id).ExecuteAsync();
+            var subject = emailInfo.Payload.Headers.FirstOrDefault(h => h.Name == "Subject")?.Value;
+            var date = emailInfo.Payload.Headers.FirstOrDefault(h => h.Name == "Date")?.Value;
+
+            messages.Add(new Message
+            {
+                Id = msg.Id,
+                Subject = subject ?? string.Empty,
+                Date = date ?? string.Empty,
+                Snippet = emailInfo.Snippet
+            });
+        }
+
+        return messages;
     }
 }

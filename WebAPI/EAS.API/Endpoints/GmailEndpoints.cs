@@ -29,18 +29,13 @@ public static class GmailEndpoints
             if (string.IsNullOrEmpty(code))
                 return Results.BadRequest("No code returned from Google");
 
-            var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code);
-
-            // Example: create Gmail service and get emails
-            var gmailApiService = new GmailService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "DSR Reminder"
-            });
+            var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code);           
 
             // You can now use gmailService.Users.Messages.List("me") etc.
+            string fromEmail = "*************";
+            var messages = await gmailService.GetTodayEmailsFromAsync(credential, fromEmail);
 
-            return Results.Ok("Authorization successful!");
+            return Results.Ok(messages);
         });
     }
 }
