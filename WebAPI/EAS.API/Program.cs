@@ -1,10 +1,9 @@
-using System.Security.Claims;
 using EAS.API;
 using EAS.API.Data;
 using EAS.API.Endpoints;
 using EAS.API.Entities;
+using EAS.API.Services;
 using EAS.API.TaskServices;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 
@@ -36,7 +35,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.ClientId = googleAuth.ClientId;
     options.ClientSecret = googleAuth.ClientSecret;
-    options.Scope.Add(googleAuth.GMailAPIUrl);
+    options.Scope.Add(googleAuth.Scopes);
     options.SaveTokens = true;
     options.CallbackPath = "/signin-google"; // <--- Important
 });
@@ -48,6 +47,7 @@ builder.Services.Configure<HolidayConfig>(builder.Configuration.GetSection("Holi
 
 // Register services
 builder.Services.AddHostedService<TaskUpdateTaskService>();
+builder.Services.AddSingleton<GmailOAuthService>();
 
 // Swagger configuration: register services and middleware together for clarity
 builder.Services.AddEndpointsApiExplorer();
