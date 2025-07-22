@@ -1,11 +1,7 @@
+using EAS.API.Data;
 using EAS.API.Entities;
 using EAS.API.Services;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace EAS.API.Endpoints;
@@ -21,21 +17,45 @@ public static class GmailEndpoints
             return Results.Redirect(authUrl);
         });
 
-        app.MapGet("/oauth2callback", async (HttpContext http, IOptions<GMailSettings> options, GmailOAuthService gmailService) =>
+        app.MapGet("/oauth2callback", async (DSRReminderContext context, HttpContext http, GmailOAuthService gmailService, IOptions<GMailSettings> gmailOptions, IOptions<SlackBotSettings> slackOptions) =>
         {
             var code = http.Request.Query["code"].ToString();
-            var userId = options.Value.UserEmail; // match the earlier one
+            var userId = gmailOptions.Value.UserEmail; // match the earlier one
 
             if (string.IsNullOrEmpty(code))
                 return Results.BadRequest("No code returned from Google");
 
-            var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code);           
+            var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code);
 
-            // You can now use gmailService.Users.Messages.List("me") etc.
-            string fromEmail = "*************";
-            var messages = await gmailService.GetTodayEmailsFromAsync(credential, fromEmail);
+            // Check if the user has any attendance records for today
+            var todate = DateTime.UtcNow.Date;
+            var fromdate = todate.AddDays(-1);
 
-            return Results.Ok(messages);
+            var query = context.Attendances
+                    .Where(a =>
+                        a.IsPresent && a.CreatedOn.Date >= fromdate.Date && a.CreatedOn.Date <= todate.Date
+                    );
+
+            var attendances = await query.Select(a => new
+            {
+                a.EmailId,
+                a.Name
+            }).Distinct().ToListAsync();
+
+            foreach (var attendance in attendances)
+            {
+                var messages = await gmailService.GetTodayEmailsFromAsync(credential, attendance.EmailId);
+                foreach (var message in messages)
+                {
+                    if (!message.Subject.Contains(fromdate.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == fromdate.Date)
+                    {
+                        var service = new SlackService(slackOptions);
+                        await service.SendMessageToChannelAsync($"*@{attendance.Name.Split().First()}* please send the *DSR* of *{fromdate.ToString("ddMMyyyy")}*.");
+                    }
+                }
+            }
+
+            return Results.NoContent();
         });
     }
 }

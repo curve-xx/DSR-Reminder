@@ -13,13 +13,13 @@ POST {{MyWebAPI_HostAddress}}/api/attendance
 Content-Type: application/json
 
 {
-  "name": "Moiz Ahmed",
-  "emailId": "moeezinbox@gmail.com",
-  "mobileNumber": "9172499704",
-  "ipAddress": "192.168.0.1",
+  "name": "Tauseef Akhtar",
+  "emailId": "tauseef.4158@gmail.com",
+  "mobileNumber": "8380824158",
+  "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-15T12:41:00.000Z"
+  "createdOn": "2025-07-21T12:25:43.000Z"
 }
 
 ### Update Attendance
