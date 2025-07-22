@@ -55,7 +55,7 @@ public static class GmailEndpoints
                 }
             }
 
-            return Results.NoContent();
+            return Results.Ok("Messages sent to Channel.");
         });
     }
 }

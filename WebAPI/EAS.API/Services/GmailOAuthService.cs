@@ -55,7 +55,7 @@ public class GmailOAuthService
         var gmailService = new GmailService(new BaseClientService.Initializer
         {
             HttpClientInitializer = credential,
-            ApplicationName = "DSR Reminder"
+            ApplicationName = _config["GMailSettings:ApplicationName"]
         });
 
         var today = DateTime.UtcNow.Date;
