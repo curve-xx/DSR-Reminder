@@ -22,6 +22,7 @@ public class AttendanceDetails
     [Required(ErrorMessage = "Public IP Address is required.")]
     public required string IPAddress { get; set; }
     public bool IsPresent { get; set; }
+    public bool IsDSRSent { get; set; }
     public bool IsDeleted { get; set; }
 
     [Required(ErrorMessage = "Created By is required.")]

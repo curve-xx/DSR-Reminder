@@ -1,10 +1,10 @@
-﻿@page "/search"
+﻿@page "/dsr-reminder"
 
 @inject AttendanceClient attendanceClient
 @inject NavigationManager NavigationManager
 @attribute [StreamRendering]
 
-<PageTitle>Search Attendance</PageTitle>
+<PageTitle>DSR Reminder</PageTitle>
 
 <SearchFilters Attendances="@attendanceSummaries" @bind-SearchName="@SearchName" @bind-FromDate="FromDate"
     @bind-ToDate="ToDate" OnSearch="HandleSearchAsync">
@@ -25,7 +25,7 @@ else
                     <th>Email</th>
                     <th>Mobile</th>
                     <th>IP Address</th>
-                    <th>Present</th>
+                    <th>DSR</th>
                     <th>Created On</th>
                     <th></th>
                 </tr>
@@ -43,23 +43,32 @@ else
                         <td>@attendance.MobileNumber</td>
                         <td>@attendance.IPAddress</td>
                         <td>
-                            @if (attendance.IsPresent)
+                            @if (attendance.IsDSRSent)
                             {
-                                <span class="badge text-bg-success">Present</span>
+                                <span class="badge text-bg-success">Sent</span>
                             }
                             else
                             {
-                                <span class="badge text-bg-danger">Absent</span>
+                                <span class="badge text-bg-danger">Not Sent</span>
                             }
                         </td>
                         <td>@attendance.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
                         <td>
                             <div class="d-flex">
-                                <button class="btn btn-secondary" data-bs-toggle="modal"
-                                    data-bs-target="@GetUpdateModalId(attendance)">
-                                    @(attendance.IsPresent ? "Mark Absent" : "Mark Present")
-                                </button>
-                                <UpdateAttendance Attendance="@attendance" />
+                                @if (!attendance.IsDSRSent)
+                                {
+                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="@GetUpdateModalId(attendance)">
+                                        Send DSR Reminder
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary" disabled>
+                                        DSR Sent
+                                    </button>
+                                }
+                                <SendDSRReminder Attendance="@attendance" />
                             </div>
                         </td>
                     </tr>
@@ -78,7 +87,7 @@ else
     private DateTime? ToDate { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        attendanceSummaries = await attendanceClient.GetAttendanceSummariesAsync();
+        attendanceSummaries = await attendanceClient.GetYesterdayAttendanceSummariesAsync();
         filteredAttendanceSummaries = attendanceSummaries;
     }
 
@@ -95,7 +104,7 @@ else
         }
         else
         {
-            filteredAttendanceSummaries = await attendanceClient.GetAttendanceSearchAsync(new AttendanceFilters
+            filteredAttendanceSummaries = await attendanceClient.GetAttendanceSearchForDSRReminderAsync(new AttendanceFilters
             {
                 SearchName = SearchName,
                 FromDate = FromDate,

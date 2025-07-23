@@ -1,0 +1,58 @@
+﻿@inject AttendanceClient AttendanceClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<!-- Modal -->
+<div class="modal fade" id="@GetModalId(Attendance)" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">@title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                @if (Attendance?.IsDSRSent == false)
+                {
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        @onclick="ConfirmAsync">Send</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary" disabled>Already Sent</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public AttendanceSummary? Attendance { get; set; }
+
+    private string title = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Attendance?.IsDSRSent == false)
+        {
+            title = $"Send DSR Reminder to {Attendance?.Name}?";
+        }
+        else
+        {
+            title = $"DSR already sent to {Attendance?.Name}.";
+        }
+    }
+
+    public static string GetModalId(AttendanceSummary? attendance)
+    {
+        return $"sent-dsr-reminder-{attendance?.Id}";
+    }
+
+    private async Task ConfirmAsync()
+    {
+        await AttendanceClient.SendDSRReminderAsync(Attendance!);
+        NavigationManager.Refresh();
+    }
+}

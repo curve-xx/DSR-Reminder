@@ -10,5 +10,6 @@ public class AttendanceSummary
     public required string MobileNumber { get; set; }
     public required string IPAddress { get; set; }
     public bool IsPresent { get; set; }
+    public bool IsDSRSent { get; set; }
     public DateTime CreatedOn { get; set; }
 }
