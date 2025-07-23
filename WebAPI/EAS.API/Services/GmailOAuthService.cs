@@ -4,7 +4,6 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using Microsoft.AspNetCore.Authentication;
 
 namespace EAS.API.Services;
 
@@ -33,23 +32,21 @@ public class GmailOAuthService
         });
     }
 
-    public string GetAuthorizationUrl(string userId)
+    public string GetAuthorizationUrl(string userId, string redirectUri)
     {
-        var redirectUri = _config["GMailSettings:RedirectUri"];
         var flow = CreateAuthorizationFlow();
         var request = flow.CreateAuthorizationCodeRequest(redirectUri);
         return request.Build().ToString();
     }
 
-    public async Task<UserCredential> ExchangeCodeForTokenAsync(string userId, string code)
+    public async Task<UserCredential> ExchangeCodeForTokenAsync(string userId, string code,string redirectUri)
     {
-        var redirectUri = _config["GMailSettings:RedirectUri"];
         var flow = CreateAuthorizationFlow();
         var token = await flow.ExchangeCodeForTokenAsync(userId, code, redirectUri, CancellationToken.None);
         return new UserCredential(flow, userId, token);
     }
 
-    public async Task<List<Message>> GetTodayEmailsFromAsync(UserCredential credential, string fromEmail)
+    public async Task<List<Message>> GetTodayEmailsFromAsync(UserCredential credential, string fromEmail, DateTime fromDate, DateTime toDate)
     {
         // Example: create Gmail service and get emails
         var gmailService = new GmailService(new BaseClientService.Initializer
@@ -58,10 +55,10 @@ public class GmailOAuthService
             ApplicationName = _config["GMailSettings:ApplicationName"]
         });
 
-        var today = DateTime.UtcNow.Date;
-        var yesterday = today.AddDays(-1);
+        // var today = DateTime.UtcNow.Date;
+        // var yesterday = today.AddDays(-1);
 
-        var query = $"after:{yesterday:yyyy/MM/dd} before:{today:yyyy/MM/dd} from:{fromEmail}";
+        var query = $"after:{fromDate:yyyy/MM/dd} before:{toDate:yyyy/MM/dd} from:{fromEmail}";
 
         var request = gmailService.Users.Messages.List("me");
         request.Q = query;
@@ -88,5 +85,5 @@ public class GmailOAuthService
         }
 
         return messages;
-    }
+    }    
 }

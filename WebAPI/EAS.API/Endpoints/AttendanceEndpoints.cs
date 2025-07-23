@@ -1,7 +1,10 @@
 using EAS.API.Data;
 using EAS.API.Dtos;
+using EAS.API.Entities;
 using EAS.API.Mapping;
+using EAS.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace EAS.API.Endpoints;
 
@@ -59,7 +62,7 @@ public static class AttendanceEndpoints
             var query = context.Attendances
                         .Where(a =>
                             (!dto.FromDate.HasValue || !dto.ToDate.HasValue || a.CreatedOn.Date >= dto.FromDate.Value.Date && a.CreatedOn.Date <= dto.ToDate.Value.Date) &&
-                            (string.IsNullOrWhiteSpace(dto.Name) || a.Name.Contains(dto.Name))
+                            (string.IsNullOrWhiteSpace(dto.Name) || a.Name.ToLower().Contains(dto.Name.ToLower()))
                         );
 
             var results = await query.ToListAsync();
@@ -72,7 +75,7 @@ public static class AttendanceEndpoints
             var query = context.Attendances
                        .Where(a =>
                            (!fromdate.HasValue || !todate.HasValue || a.CreatedOn.Date >= fromdate.Value.Date && a.CreatedOn.Date <= todate.Value.Date) &&
-                           (string.IsNullOrWhiteSpace(name) || a.Name.Contains(name))
+                           (string.IsNullOrWhiteSpace(name) || a.Name.ToLower().Contains(name.ToLower()))
                        );
 
             var results = await query.ToListAsync();
@@ -91,6 +94,31 @@ public static class AttendanceEndpoints
 
             await context.SaveChangesAsync();
             return Results.Ok(attendance);
+        });
+
+        // Search DSR Reminder by name or date
+        group.MapGet("/dsr-reminder-search", async (DSRReminderContext context, string? name = null, DateTime? fromdate = null, DateTime? todate = null) =>
+        {
+            var query = context.Attendances
+                       .Where(a =>
+                           (!fromdate.HasValue || !todate.HasValue || a.CreatedOn.Date >= fromdate.Value.Date &&
+                           ((todate.Value.Date < DateTime.UtcNow.Date && a.CreatedOn.Date <= todate.Value.Date) || a.CreatedOn.Date < DateTime.UtcNow.Date)) &&
+                           (string.IsNullOrWhiteSpace(name) || a.Name.ToLower().Contains(name.ToLower()))
+                       );
+
+            var results = await query.ToListAsync();
+            return Results.Ok(results);
+        });
+
+        // Edit attendance by ID
+        group.MapPost("/send-dsr-reminder", (UpdateAttendanceDto dto, IOptions<GMailSettings> options, GmailOAuthService gmailService) =>
+        {
+            if (dto.Id <= 0)
+                return Results.BadRequest("Invalid attendance id.");
+
+            var userId = options.Value.UserEmail; // or derive from session
+            var authUrl = gmailService.GetAuthorizationUrl(userId, options.Value.DSRReminderRedirectUri);
+            return Results.Redirect(authUrl + "&id=" + dto.Id);
         });
 
         return group;

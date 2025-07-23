@@ -8,6 +8,7 @@ public record class UpdateAttendanceDto(
     string EmailId,
     string MobileNumber,
     string IPAddress,
+    bool IsDSRSent,
     bool IsPresent,
     DateTime CreatedOn
 );
