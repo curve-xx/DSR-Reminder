@@ -94,7 +94,7 @@ else
 
     private string GetUpdateModalId(AttendanceSummary attendance)
     {
-        return $"#{UpdateAttendance.GetModalId(attendance)}";
+        return $"#{SendDSRReminder.GetModalId(attendance)}";
     }
 
     private async Task HandleSearchAsync()
