@@ -11,6 +11,7 @@ public class Attendance
     public required string MobileNumber { get; set; }
     public required string IPAddress { get; set; }
     public bool IsPresent { get; set; } = true;
+    public bool IsDSRSent { get; set; } = false;
 
     public bool IsDeleted { get; set; }
     public required string CreatedBy { get; set; }

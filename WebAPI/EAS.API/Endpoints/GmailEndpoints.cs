@@ -38,6 +38,7 @@ public static class GmailEndpoints
 
             var attendances = await query.Select(a => new
             {
+                a.Id,
                 a.EmailId,
                 a.Name
             }).Distinct().ToListAsync();
@@ -50,7 +51,18 @@ public static class GmailEndpoints
                     if (!message.Subject.Contains(fromdate.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == fromdate.Date)
                     {
                         var service = new SlackService(slackOptions);
-                        await service.SendMessageToChannelAsync($"*@{attendance.Name.Split().First()}* please send the *DSR* of *{fromdate.ToString("ddMMyyyy")}*.");
+                        await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{fromdate.ToString("ddMMyyyy")}*.");
+                    }
+                    else
+                    {
+                        var existing = await context.Attendances.FindAsync(attendance.Id);
+                        if (existing is null) continue;
+
+                        existing.IsDSRSent = true; 
+                        existing.UpdatedBy = "Administrator";
+                        existing.UpdatedOn = DateTime.Now;
+
+                        await context.SaveChangesAsync();
                     }
                 }
             }

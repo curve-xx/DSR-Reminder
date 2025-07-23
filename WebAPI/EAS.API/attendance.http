@@ -8,7 +8,7 @@ Accept: application/json
 GET {{MyWebAPI_HostAddress}}/api/attendance/1
 Accept: application/json
 
-### Create Attendance
+### Create Attendance 1
 POST {{MyWebAPI_HostAddress}}/api/attendance
 Content-Type: application/json
 
@@ -19,7 +19,21 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-21T12:25:43.000Z"
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 2
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Mohmmad Shoeb",
+  "emailId": "shoebrayeen8697@gmail.com",
+  "mobileNumber": "9579702736",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
 }
 
 ### Update Attendance
