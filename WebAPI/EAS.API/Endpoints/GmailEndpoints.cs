@@ -70,13 +70,16 @@ public static class GmailEndpoints
                 }
             }
 
-            return Results.Ok("Messages sent to Channel.");
+            return Results.Ok("DSR activity done.");
         });
 
         app.MapGet("/dsrreminderoauth2callback", async (DSRReminderContext context, HttpContext http, GmailOAuthService gmailService, IOptions<GMailSettings> gmailOptions, IOptions<SlackBotSettings> slackOptions) =>
         {
             var code = http.Request.Query["code"].ToString();
-            var id = http.Request.Query["id"].ToString();
+            var id = DSRReminder.id; // Assuming this is set somewhere in the context or passed as a query parameter
+            if (id == 0)
+                return Results.BadRequest("No attendance id provided");
+
             var userId = gmailOptions.Value.UserEmail; // match the earlier one
 
             if (string.IsNullOrEmpty(code))
@@ -84,11 +87,11 @@ public static class GmailEndpoints
 
             var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code, gmailOptions.Value.DSRReminderRedirectUri);
 
-            var attendance = await context.Attendances.FindAsync(Convert.ToInt32(id));
+            var attendance = await context.Attendances.Where(a => a.Id == Convert.ToInt32(id) && a.IsPresent).FirstOrDefaultAsync();
             if (attendance is null) return Results.NotFound();
 
 
-            var messages = await gmailService.GetTodayEmailsFromAsync(credential, attendance.EmailId, attendance.CreatedOn, attendance.CreatedOn);
+            var messages = await gmailService.GetTodayEmailsFromAsync(credential, attendance.EmailId, attendance.CreatedOn.Date, attendance.CreatedOn.Date.AddDays(1));
             foreach (var message in messages)
             {
                 if (!message.Subject.Contains(attendance.CreatedOn.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == attendance.CreatedOn.Date)
@@ -109,7 +112,7 @@ public static class GmailEndpoints
                 }
             }
 
-            return Results.Ok("Messages sent to Channel.");
+            return Results.Ok("DSR activity done.");
         });
     }
 }
