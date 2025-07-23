@@ -102,7 +102,8 @@ public static class AttendanceEndpoints
             var query = context.Attendances
                        .Where(a =>
                            (!fromdate.HasValue || !todate.HasValue || a.CreatedOn.Date >= fromdate.Value.Date &&
-                           ((todate.Value.Date < DateTime.UtcNow.Date && a.CreatedOn.Date <= todate.Value.Date) || a.CreatedOn.Date < DateTime.UtcNow.Date)) &&
+                           ((todate.Value.Date < DateTime.Now.Date && a.CreatedOn.Date <= todate.Value.Date) ||
+                           (todate.Value.Date >= DateTime.Now.Date && a.CreatedOn.Date < DateTime.Now.Date))) &&
                            (string.IsNullOrWhiteSpace(name) || a.Name.ToLower().Contains(name.ToLower()))
                        );
 
