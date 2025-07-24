@@ -39,7 +39,7 @@ public class GmailOAuthService
         return request.Build().ToString();
     }
 
-    public async Task<UserCredential> ExchangeCodeForTokenAsync(string userId, string code,string redirectUri)
+    public async Task<UserCredential> ExchangeCodeForTokenAsync(string userId, string code, string redirectUri)
     {
         var flow = CreateAuthorizationFlow();
         var token = await flow.ExchangeCodeForTokenAsync(userId, code, redirectUri, CancellationToken.None);
@@ -55,7 +55,7 @@ public class GmailOAuthService
             ApplicationName = _config["GMailSettings:ApplicationName"]
         });
 
-        // var today = DateTime.UtcNow.Date;
+        // var today = DateTime.Now.Date;
         // var yesterday = today.AddDays(-1);
 
         var query = $"after:{fromDate:yyyy/MM/dd} before:{toDate:yyyy/MM/dd} from:{fromEmail}";
@@ -85,5 +85,5 @@ public class GmailOAuthService
         }
 
         return messages;
-    }    
+    }
 }

@@ -5,5 +5,5 @@ namespace EAS.API.Entities;
 
 public static class DSRReminder
 {
-    public static string? email;
+    public static int id;
 }
