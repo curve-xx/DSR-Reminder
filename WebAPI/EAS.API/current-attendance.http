@@ -1,0 +1,85 @@
+@MyWebAPI_HostAddress = http://localhost:5032
+
+### Create Attendance 1
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Monis Imran",
+  "emailId": "monisimran7@gmail.com",
+  "mobileNumber": "9021853207",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 2
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Tauseef Akhtar",
+  "emailId": "tauseef.4158@gmail.com",
+  "mobileNumber": "8380824158",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 3
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Mohmmad Shoeb",
+  "emailId": "shoebrayeen8697@gmail.com",
+  "mobileNumber": "9579702736",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 4
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Sadaf Zarreen",
+  "emailId": "sadafzarreen01@gmail.com",
+  "mobileNumber": "8793338845",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 5
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Nikhat Shazi",
+  "emailId": "nikhatshazi18@gmail.com",
+  "mobileNumber": "9579472329",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}
+
+### Create Attendance 6
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Aazib Noman",
+  "emailId": "aazzibnomaan@gmail.com",
+  "mobileNumber": "9405589381",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-23T12:25:43.000Z"
+}

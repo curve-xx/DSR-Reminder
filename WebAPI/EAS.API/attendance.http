@@ -8,7 +8,7 @@ Accept: application/json
 GET {{MyWebAPI_HostAddress}}/api/attendance/1
 Accept: application/json
 
-### Create Attendance 1
+### Create Attendance
 POST {{MyWebAPI_HostAddress}}/api/attendance
 Content-Type: application/json
 
@@ -22,19 +22,6 @@ Content-Type: application/json
   "createdOn": "2025-07-23T12:25:43.000Z"
 }
 
-### Create Attendance 2
-POST {{MyWebAPI_HostAddress}}/api/attendance
-Content-Type: application/json
-
-{
-  "name": "Mohmmad Shoeb",
-  "emailId": "shoebrayeen8697@gmail.com",
-  "mobileNumber": "9579702736",
-  "ipAddress": "203.194.107.110",
-  "isDeleted": false,
-  "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
-}
 
 ### Update Attendance
 PUT {{MyWebAPI_HostAddress}}/api/attendance/1
@@ -42,9 +29,9 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "name": "Moiz Ahmed",
-  "emailId": "moeezinbox@gmail.com",
-  "mobileNumber": "9172499704",
+  "name": "Mohmmad Shoeb",
+  "emailId": "shoebrayeen8697@gmail.com",
+  "mobileNumber": "9579702736",
   "ipAddress": "192.168.0.1",
   "isPresent": true,
   "createdOn": "2025-07-09T12:41:00.000Z"
@@ -61,7 +48,7 @@ Accept: application/json
 }
 
 ### Search Attendance
-GET {{MyWebAPI_HostAddress}}/api/attendance/search?name=Moiz&fromdate=2025-07-01T12:41:00.000Z&todate=2025-07-31T12:41:00.000Z
+GET {{MyWebAPI_HostAddress}}/api/attendance/search?name=Tauseef&fromdate=2025-07-01T12:41:00.000Z&todate=2025-07-31T12:41:00.000Z
 Accept: application/json
 
 ### Edit Attendance
@@ -77,3 +64,11 @@ Content-Type: application/json
   "isPresent": true,
   "createdOn": "2025-07-09T12:41:00.000Z"
 }
+
+### Get DSR Reminder Search
+GET {{MyWebAPI_HostAddress}}/api/attendance/dsr-reminder-search?name=Tauseef&fromdate=2025-07-01T12:41:00.000Z&todate=2025-07-31T12:41:00.000Z
+Accept: application/json
+
+### Send DSR Reminder
+GET {{MyWebAPI_HostAddress}}/api/attendance/send-dsr-reminder
+Accept: application/json

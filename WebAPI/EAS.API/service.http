@@ -5,9 +5,5 @@ POST {{MyWebAPI_HostAddress}}/api/slack/task-update
 Content-Type: application/json
 
 ###
-POST {{MyWebAPI_HostAddress}}/api/gmail/dsr-reminder?from=tauseef.4158@gmail.com&fromdate=2025-07-21&todate=2025-07-21
-Content-Type: application/json
-
-###
-POST {{MyWebAPI_HostAddress}}/api/gmail/emails
+POST {{MyWebAPI_HostAddress}}/auth/start
 Content-Type: application/json
