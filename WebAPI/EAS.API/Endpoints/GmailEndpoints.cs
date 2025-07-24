@@ -100,9 +100,15 @@ public static class GmailEndpoints
 
             var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code, gmailOptions.Value.DSRReminderRedirectUri);
 
-            var attendance = await context.Attendances.Where(a => a.Id == id && a.IsPresent && !a.IsDSRSent).FirstOrDefaultAsync();
-            if (attendance is null) return Results.NotFound();
-
+            var attendance = await context.Attendances.Where(a => a.Id == id && a.IsPresent).FirstOrDefaultAsync();
+            if (attendance is null)
+            {
+                return Results.NotFound();
+            } 
+            else if (attendance.IsDSRSent)
+            {
+                return Results.Ok("DSR already sent for this attendance.");
+            }
 
             var messages = await gmailService.GetTodayEmailsFromAsync(credential, attendance.EmailId, attendance.CreatedOn.Date, DateTime.Now.Date);
             if (messages is null || !messages.Any())
