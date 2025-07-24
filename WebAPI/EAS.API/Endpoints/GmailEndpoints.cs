@@ -64,7 +64,7 @@ public static class GmailEndpoints
                         }
                         else
                         {
-                            var existingAttendances = await context.Attendances.Where(a => a.Name == attendance.Name && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
+                            var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
                             if (existingAttendances is null || !existingAttendances.Any()) continue;
 
                             foreach (var existing in existingAttendances)
@@ -86,9 +86,9 @@ public static class GmailEndpoints
         app.MapGet("/dsrreminderoauth2callback", async (DSRReminderContext context, HttpContext http, GmailOAuthService gmailService, IOptions<GMailSettings> gmailOptions, IOptions<SlackBotSettings> slackOptions) =>
         {
             var code = http.Request.Query["code"].ToString();
-            var id = DSRReminder.id; // Assuming this is set somewhere in the context or passed as a query parameter
-            if (id == 0)
-                return Results.BadRequest("No attendance id provided");
+            var emailId = DSRReminder.email; // Assuming this is set somewhere in the context or passed as a query parameter
+            if (string.IsNullOrWhiteSpace(emailId))
+                return Results.BadRequest("No attendance email-id provided");
 
             var userId = gmailOptions.Value.UserEmail; // match the earlier one
 
@@ -97,7 +97,7 @@ public static class GmailEndpoints
 
             var credential = await gmailService.ExchangeCodeForTokenAsync(userId, code, gmailOptions.Value.DSRReminderRedirectUri);
 
-            var attendance = await context.Attendances.Where(a => a.Id == Convert.ToInt32(id) && a.IsPresent).FirstOrDefaultAsync();
+            var attendance = await context.Attendances.Where(a => a.EmailId == emailId && a.IsPresent).FirstOrDefaultAsync();
             if (attendance is null) return Results.NotFound();
 
 
@@ -118,7 +118,7 @@ public static class GmailEndpoints
                     }
                     else
                     {
-                        var existingAttendances = await context.Attendances.Where(a => a.Name == attendance.Name && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
+                        var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
                         if (existingAttendances is null || !existingAttendances.Any()) continue;
 
                         foreach (var item in existingAttendances)

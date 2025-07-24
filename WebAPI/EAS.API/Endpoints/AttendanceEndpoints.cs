@@ -112,11 +112,11 @@ public static class AttendanceEndpoints
         });
 
         // Send DSR reminder
-        group.MapGet("/send-dsr-reminder", (int id, IOptions<GMailSettings> options, GmailOAuthService gmailService) =>
+        group.MapGet("/send-dsr-reminder", (string email, IOptions<GMailSettings> options, GmailOAuthService gmailService) =>
         {
-            if (id <= 0)
-                return Results.BadRequest("Invalid attendance id.");
-            DSRReminder.id = id;
+            if (string.IsNullOrWhiteSpace(email))
+                return Results.BadRequest("Invalid attendance email-id.");
+            DSRReminder.email = email;
 
             var userId = options.Value.UserEmail; // or derive from session
             var authUrl = gmailService.GetAuthorizationUrl(userId, options.Value.DSRReminderRedirectUri);
