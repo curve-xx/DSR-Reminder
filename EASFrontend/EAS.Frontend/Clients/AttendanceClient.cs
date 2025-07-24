@@ -87,7 +87,7 @@ public class AttendanceClient(HttpClient httpClient)
    // Send DSR reminder for a specific user
    public async Task SendDSRReminderAsync(AttendanceSummary updateAttendance)
    {
-      var response = await httpClient.GetAsync($"attendance/send-dsr-reminder?email={updateAttendance.EmailId}");
+      var response = await httpClient.GetAsync($"attendance/send-dsr-reminder?id={updateAttendance.Id}");
 
       var content = await response.Content.ReadAsStringAsync();
       Console.WriteLine($"[Error] Response Body: {content}");
