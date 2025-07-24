@@ -70,5 +70,5 @@ GET {{MyWebAPI_HostAddress}}/api/attendance/dsr-reminder-search?name=Tauseef&fro
 Accept: application/json
 
 ### Send DSR Reminder
-GET {{MyWebAPI_HostAddress}}/api/attendance/send-dsr-reminder?id=1
+GET {{MyWebAPI_HostAddress}}/api/attendance/send-dsr-reminder?email=tauseef.4158@gmail.com
 Accept: application/json
