@@ -1,9 +1,9 @@
 @MyWebAPI_HostAddress = http://localhost:5032
 
-###
+### Task Updates Reminder on Slack
 POST {{MyWebAPI_HostAddress}}/api/slack/task-update
 Content-Type: application/json
 
-###
-POST {{MyWebAPI_HostAddress}}/auth/start
+### Start Authentication of DSR Reminder
+GET {{MyWebAPI_HostAddress}}/auth/start
 Content-Type: application/json

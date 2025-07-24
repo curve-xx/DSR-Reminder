@@ -78,7 +78,7 @@ Content-Type: application/json
   "name": "Aazib Noman",
   "emailId": "aazzibnomaan@gmail.com",
   "mobileNumber": "9405589381",
-  "ipAddress": "203.194.107.110",
+  "ipAddress": "192.168.0.1",
   "isDeleted": false,
   "createdBy": "System",
   "createdOn": "2025-07-23T12:25:43.000Z"
