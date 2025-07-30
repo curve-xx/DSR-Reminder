@@ -28,7 +28,7 @@ else
                     <th>IP Address</th>
                     <th>DSR</th>
                     <th>Created On</th>
-                    <th></th>
+                    @* <th></th> *@
                 </tr>
             </thead>
             <tbody>
@@ -54,7 +54,7 @@ else
                             }
                         </td>
                         <td>@attendance.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                        <td>
+                        @* <td>
                             <div class="d-flex">
                                 @if (!attendance.IsDSRSent)
                                 {
@@ -71,7 +71,7 @@ else
                                 }
                                 <SendDSRReminder Attendance="@attendance" />
                             </div>
-                        </td>
+                        </td> *@
                     </tr>
                 }
             </tbody>
