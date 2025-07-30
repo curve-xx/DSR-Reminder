@@ -11,7 +11,7 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
 
 ### Create Attendance 2
@@ -25,7 +25,7 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
 
 ### Create Attendance 3
@@ -39,7 +39,7 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
 
 ### Create Attendance 4
@@ -53,7 +53,7 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
 
 ### Create Attendance 5
@@ -67,7 +67,7 @@ Content-Type: application/json
   "ipAddress": "203.194.107.110",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
 
 ### Create Attendance 6
@@ -81,5 +81,19 @@ Content-Type: application/json
   "ipAddress": "192.168.0.1",
   "isDeleted": false,
   "createdBy": "System",
-  "createdOn": "2025-07-23T12:25:43.000Z"
+  "createdOn": "2025-07-29T12:25:43.000Z"
+}
+
+### Create Attendance 7
+POST {{MyWebAPI_HostAddress}}/api/attendance
+Content-Type: application/json
+
+{
+  "name": "Moiz Ahmed",
+  "emailId": "moeezinbox@gmail.com",
+  "mobileNumber": "9172499704",
+  "ipAddress": "203.194.107.110",
+  "isDeleted": false,
+  "createdBy": "System",
+  "createdOn": "2025-07-29T12:25:43.000Z"
 }
