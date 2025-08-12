@@ -31,7 +31,7 @@ public static class GmailEndpoints
 
             // Check if the user has any attendance records for today
             var todate = DateTime.Now.Date;
-            var fromdate = todate.AddDays(-1);
+            var fromdate = todate.AddDays(-1); // Assuming we want to check from yesterday to today
 
             var query = context.Attendances
                     .Where(a =>
@@ -40,10 +40,9 @@ public static class GmailEndpoints
 
             var attendances = await query.Select(a => new
             {
-                a.Id,
                 a.EmailId,
                 a.Name,
-                a.CreatedOn
+                a.CreatedOn.Date
             }).Distinct().ToListAsync();
 
             foreach (var attendance in attendances)
@@ -52,32 +51,30 @@ public static class GmailEndpoints
                 if (messages is null || !messages.Any())
                 {
                     var service = new SlackService(slackOptions);
-                    await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{fromdate.ToString("ddMMyyyy")}*.");
+                    await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{attendance.Date.ToString("ddMMyyyy")}*.");
                     continue;
                 }
                 else
                 {
-                    foreach (var message in messages)
+                    Message? message = messages?.Where(x => Convert.ToDateTime(x.Date).Date == attendance.Date).FirstOrDefault();
+                    if (message != null && message.Subject.Contains(attendance.Date.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == attendance.Date)
                     {
-                        if (message.Subject.Contains(fromdate.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == fromdate.Date)
-                        {
-                            var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
-                            if (existingAttendances is null || !existingAttendances.Any()) continue;
+                        var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.Date).ToListAsync();
+                        if (existingAttendances is null || !existingAttendances.Any()) continue;
 
-                            foreach (var existing in existingAttendances)
-                            {
-                                existing.IsDSRSent = true;
-                                existing.UpdatedBy = "Administrator";
-                                existing.UpdatedOn = DateTime.Now;
-                            }
-
-                            await context.SaveChangesAsync();
-                        }
-                        else
+                        foreach (var existing in existingAttendances)
                         {
-                            var service = new SlackService(slackOptions);
-                            await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{fromdate.ToString("ddMMyyyy")}*.");
+                            existing.IsDSRSent = true;
+                            existing.UpdatedBy = "Administrator";
+                            existing.UpdatedOn = DateTime.Now;
                         }
+
+                        await context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        var service = new SlackService(slackOptions);
+                        await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{attendance.Date.ToString("ddMMyyyy")}*.");
                     }
                 }
             }
@@ -104,7 +101,7 @@ public static class GmailEndpoints
             if (attendance is null)
             {
                 return Results.NotFound();
-            } 
+            }
             else if (attendance.IsDSRSent)
             {
                 return Results.Ok("DSR already sent for this attendance.");
@@ -118,27 +115,33 @@ public static class GmailEndpoints
             }
             else
             {
+                int count = 0;
                 foreach (var message in messages)
                 {
-                    if (message.Subject.Contains(attendance.CreatedOn.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date >= attendance.CreatedOn.Date)
+                    if (message.Subject.Contains(attendance.CreatedOn.ToString("ddMMyyyy")))
                     {
                         var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.CreatedOn.Date).ToListAsync();
-                        if (existingAttendances is null || !existingAttendances.Any()) continue;
-
-                        foreach (var item in existingAttendances)
+                        if (existingAttendances is not null && existingAttendances.Any())
                         {
-                            item.IsDSRSent = true;
-                            item.UpdatedBy = "Administrator";
-                            item.UpdatedOn = DateTime.Now;
-                        }
+                            foreach (var item in existingAttendances)
+                            {
+                                item.IsDSRSent = true;
+                                item.UpdatedBy = "Administrator";
+                                item.UpdatedOn = DateTime.Now;
+                            }
 
-                        await context.SaveChangesAsync();
+                            await context.SaveChangesAsync();
+                        }
+                        break;
                     }
-                    else
-                    {
-                        var service = new SlackService(slackOptions);
-                        await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{attendance.CreatedOn.ToString("ddMMyyyy")}*.");
-                    }
+                    count++;
+                }
+
+
+                if (messages.Count() == count)
+                {
+                    var service = new SlackService(slackOptions);
+                    await service.SendMessageToChannelAsync($"*@{attendance.Name}* please send the *DSR* of *{attendance.CreatedOn.ToString("ddMMyyyy")}*.");
                 }
             }
 
