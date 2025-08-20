@@ -56,8 +56,8 @@ public static class GmailEndpoints
                 }
                 else
                 {
-                    Message? message = messages?.Where(x => Convert.ToDateTime(x.Date).Date == attendance.Date).FirstOrDefault();
-                    if (message != null && message.Subject.Contains(attendance.Date.ToString("ddMMyyyy")) && Convert.ToDateTime(message.Date).Date == attendance.Date)
+                    Message? message = messages?.Where(x =>x.Subject.Contains(attendance.Date.ToString("ddMMyyyy")) && Convert.ToDateTime(x.Date).Date >= attendance.Date).FirstOrDefault();
+                    if (message != null)
                     {
                         var existingAttendances = await context.Attendances.Where(a => a.EmailId == attendance.EmailId && a.CreatedOn.Date == attendance.Date).ToListAsync();
                         if (existingAttendances is null || !existingAttendances.Any()) continue;
